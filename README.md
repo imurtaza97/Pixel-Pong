@@ -23,7 +23,7 @@ git clone https://github.com/yourusername/pixel-pong.git
 ##### 'Navigate to the project directory:'
 
 cd pixel-pong
-'
+
 ##### 'Install dependencies:'
 
 npm install
