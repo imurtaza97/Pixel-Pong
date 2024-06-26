@@ -6,9 +6,9 @@ const Game = ({ setShowNavbarAndFooter }) => {
   const [showStart, setShowStart] = useState(false);
   const [paddleX, setPaddleX] = useState(0);
   const [ballX, setBallX] = useState(0); // Initial ball X position (in pixels)
-  const [ballXSpeed, setBallXSpeed] = useState(4);
+  const [ballXSpeed, setBallXSpeed] = useState(6);
   const [ballY, setBallY] = useState(0); // Initial ball Y position
-  const [ballYSpeed, setBallYSpeed] = useState(4);
+  const [ballYSpeed, setBallYSpeed] = useState(6);
   const [points, setPoints] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   
@@ -17,6 +17,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
   const ballXSpeedRef = useRef(ballXSpeed);
   const ballYSpeedRef = useRef(ballYSpeed);
   
+  // Game start
   const startGame = () => {
     setShowStart(true);
 
@@ -28,11 +29,12 @@ const Game = ({ setShowNavbarAndFooter }) => {
   };
 
   useEffect(() => {
+
     const moveBall = () => {
       let newBallX = ballXRef.current + ballXSpeedRef.current;
       let newBallY = ballYRef.current + ballYSpeedRef.current;
 
-
+      //Paddle Collision
       const paddleElement = document.querySelector('.paddle');
       if (paddleElement) {
         const paddleRect = paddleElement.getBoundingClientRect();
@@ -56,6 +58,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
 
       }
 
+      //Wall Collision
       const gameElement = document.querySelector('.game');
       if (gameElement) {
         const gameRect = gameElement.getBoundingClientRect();
@@ -89,6 +92,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
       requestAnimationFrame(moveBall);
     };
 
+    // Call moveBall on timer ends
     if (showStart && timer === 0) {
       moveBall(); // Start moving the ball when the game starts
     }
@@ -96,6 +100,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
     return () => cancelAnimationFrame(moveBall);
   }, [showStart, timer]);
 
+  //hide NavBar & Footer on page
   useEffect(() => {
     setShowNavbarAndFooter(false);
 
@@ -104,6 +109,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
     };
   }, [setShowNavbarAndFooter]);
 
+  // Timer on Load
   useEffect(() => {
     if (timer > 0) {
       const countTime = setInterval(() => {
@@ -123,6 +129,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
     }
   }, [timer]);
 
+  // Mouse Movement
   const handleMouseMove = (event) => {
     const gameArea = document.querySelector('.game');
     const gameAreaRect = gameArea.getBoundingClientRect();
@@ -136,30 +143,31 @@ const Game = ({ setShowNavbarAndFooter }) => {
     setPaddleX(newPaddleX);
   };
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      const gameArea = document.querySelector('.game');
-      const gameAreaRect = gameArea.getBoundingClientRect();
-      const maxPaddleX = gameAreaRect.width - 250;
-  
-      if (event.key === 'ArrowLeft') {
-        if (paddleX > 0) {
-          setPaddleX((prevPaddleX) => Math.max(0, prevPaddleX - 30));
-        }
-      } else if (event.key === 'ArrowRight') {
-        if (paddleX < maxPaddleX) {
-          setPaddleX((prevPaddleX) => Math.min(maxPaddleX, prevPaddleX + 30));
-        }
+  //  Keyboard Movement
+  const handleKeyDown = (event) => {
+    const gameArea = document.querySelector('.game');
+    const gameAreaRect = gameArea.getBoundingClientRect();
+    const maxPaddleX = gameAreaRect.width - 250;
+
+    if (event.key === 'ArrowLeft') {
+      if (paddleX > 0) {
+        setPaddleX((prevPaddleX) => Math.max(0, prevPaddleX - 30));
       }
-    };
-  
+    } else if (event.key === 'ArrowRight') {
+      if (paddleX < maxPaddleX) {
+        setPaddleX((prevPaddleX) => Math.min(maxPaddleX, prevPaddleX + 30));
+      }
+    }
+  };
+
+  useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
-  
+
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [paddleX]);
-  
+
   return (
     <div className="game" onMouseMove={handleMouseMove}>
       <div className="score-board">
