@@ -6,9 +6,9 @@ const Game = ({ setShowNavbarAndFooter }) => {
   const [showStart, setShowStart] = useState(false);
   const [paddleX, setPaddleX] = useState(0);
   const [ballX, setBallX] = useState(0); // Initial ball X position (in pixels)
-  const [ballXSpeed, setBallXSpeed] = useState(6);
+  const [ballXSpeed, setBallXSpeed] = useState(4);
   const [ballY, setBallY] = useState(0); // Initial ball Y position
-  const [ballYSpeed, setBallYSpeed] = useState(6);
+  const [ballYSpeed, setBallYSpeed] = useState(4);
   const [points, setPoints] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   
@@ -132,35 +132,60 @@ const Game = ({ setShowNavbarAndFooter }) => {
   // Mouse Movement
   const handleMouseMove = (event) => {
     const gameArea = document.querySelector('.game');
+    const paddleArea = document.querySelector('.paddle');
+    
     const gameAreaRect = gameArea.getBoundingClientRect();
+    const paddleAreaRect = paddleArea.getBoundingClientRect();
+
     const mouseX = event.clientX - gameAreaRect.left;
 
-    const paddleWidth = 250; // Assume the paddle width is 250px
+    const paddleWidth = paddleAreaRect.width;
     const maxPaddleX = gameAreaRect.width - paddleWidth;
 
     const newPaddleX = Math.max(0, Math.min(mouseX, maxPaddleX));
 
     setPaddleX(newPaddleX);
   };
-
-  //  Keyboard Movement
-  const handleKeyDown = (event) => {
+  // Touch Movement
+  const handleTouchMove = (event) => {
     const gameArea = document.querySelector('.game');
+    const paddleArea = document.querySelector('.paddle');
+    
     const gameAreaRect = gameArea.getBoundingClientRect();
-    const maxPaddleX = gameAreaRect.width - 250;
-
-    if (event.key === 'ArrowLeft') {
-      if (paddleX > 0) {
-        setPaddleX((prevPaddleX) => Math.max(0, prevPaddleX - 30));
-      }
-    } else if (event.key === 'ArrowRight') {
-      if (paddleX < maxPaddleX) {
-        setPaddleX((prevPaddleX) => Math.min(maxPaddleX, prevPaddleX + 30));
-      }
-    }
+    const paddleAreaRect = paddleArea.getBoundingClientRect();
+  
+    const touchX = event.touches[0].clientX - gameAreaRect.left;
+  
+    const paddleWidth = paddleAreaRect.width;
+    const maxPaddleX = gameAreaRect.width - paddleWidth;
+  
+    // Increase touch speed by amplifying the movement
+    const movementFactor = 1.5; // Adjust this factor to increase/decrease speed
+    const newPaddleX = Math.max(0, Math.min(touchX * movementFactor, maxPaddleX));
+  
+    setPaddleX(newPaddleX);
   };
-
+  //  Keyboard Movement
   useEffect(() => {
+    const handleKeyDown = (event) => {
+      const gameArea = document.querySelector('.game');
+      const paddleArea = document.querySelector('.paddle');
+
+      const gameAreaRect = gameArea.getBoundingClientRect();
+      const paddleAreaRect = paddleArea.getBoundingClientRect();
+
+      const maxPaddleX = gameAreaRect.width - paddleAreaRect.width;
+
+      if (event.key === 'ArrowLeft') {
+        if (paddleX > 0) {
+          setPaddleX((prevPaddleX) => Math.max(0, prevPaddleX - 30));
+        }
+      } else if (event.key === 'ArrowRight') {
+        if (paddleX < maxPaddleX) {
+          setPaddleX((prevPaddleX) => Math.min(maxPaddleX, prevPaddleX + 30));
+        }
+      }
+    };
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
@@ -169,7 +194,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
   }, [paddleX]);
 
   return (
-    <div className="game" onMouseMove={handleMouseMove}>
+    <div className="game" onMouseMove={handleMouseMove} onTouchMove={handleTouchMove}>
       <div className="score-board">
         <h2><strong>Points:</strong>{points}</h2>
       </div>

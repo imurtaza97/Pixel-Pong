@@ -19,12 +19,13 @@ a{
 
 .home-container h1{
   font-family: "Bungee Outline", sans-serif;
-  font-size: 56px;
+  font-size: 50px;
   color: #212529;
-  margin: 70px;
+  margin: 10px;
+  text-align: center;
 }
 .home-container span{
-  margin-top: 50px;
+  margin-top: 10px;
 }
 .home-container p{
   text-align: center;
@@ -52,7 +53,7 @@ a{
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  margin: 80px;
+  margin: 30px 0px;
 }
 
 .button-56:after {
@@ -101,6 +102,7 @@ a{
 .navbar ul{
   display: flex;
   margin: 0;
+  padding: 0;
 }
 .navbar ul li{
   padding: 10px;
@@ -206,4 +208,22 @@ a{
 }
 .game-over span a{
   margin: 10px;
+}
+
+@media screen and (max-width: 900px) {
+  .home-container h1{
+    font-size: 20px;
+  }
+  .button-56{
+    margin: 10px;
+  }
+  .game{
+    max-height: 94vh;
+  }
+  .paddle{
+    width: 150px;
+  }
+  .home-container p{
+    max-width: fit-content;
+  }
 }
