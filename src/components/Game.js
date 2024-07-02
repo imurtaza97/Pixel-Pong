@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Home,RotateCcw } from 'lucide-react';
+import { Home, RotateCcw } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Game = ({ setShowNavbarAndFooter }) => {
   const [timer, setTimer] = useState(5);
@@ -11,12 +12,12 @@ const Game = ({ setShowNavbarAndFooter }) => {
   const [ballYSpeed, setBallYSpeed] = useState(4);
   const [points, setPoints] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  
+
   const ballXRef = useRef(ballX);
   const ballYRef = useRef(ballY);
   const ballXSpeedRef = useRef(ballXSpeed);
   const ballYSpeedRef = useRef(ballYSpeed);
-  
+
   // Game start
   const startGame = () => {
     setShowStart(true);
@@ -27,6 +28,12 @@ const Game = ({ setShowNavbarAndFooter }) => {
 
     return timerId;
   };
+
+  const reStartGame = (e) => {
+    e.preventDefault();
+    window.location.href = "/game"; // This will trigger a full page reload
+  };
+
 
   useEffect(() => {
 
@@ -68,7 +75,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
 
         if (newBallX <= 0 || newBallX + ballDiameter >= gameRight) {
           ballXSpeedRef.current = -ballXSpeedRef.current;
-          newBallX =  ballXRef.current - ballXSpeedRef.current;
+          newBallX = ballXRef.current - ballXSpeedRef.current;
           setBallXSpeed(newBallX);
         }
 
@@ -133,7 +140,7 @@ const Game = ({ setShowNavbarAndFooter }) => {
   const handleMouseMove = (event) => {
     const gameArea = document.querySelector('.game');
     const paddleArea = document.querySelector('.paddle');
-    
+
     const gameAreaRect = gameArea.getBoundingClientRect();
     const paddleAreaRect = paddleArea.getBoundingClientRect();
 
@@ -150,19 +157,19 @@ const Game = ({ setShowNavbarAndFooter }) => {
   const handleTouchMove = (event) => {
     const gameArea = document.querySelector('.game');
     const paddleArea = document.querySelector('.paddle');
-    
+
     const gameAreaRect = gameArea.getBoundingClientRect();
     const paddleAreaRect = paddleArea.getBoundingClientRect();
-  
+
     const touchX = event.touches[0].clientX - gameAreaRect.left;
-  
+
     const paddleWidth = paddleAreaRect.width;
     const maxPaddleX = gameAreaRect.width - paddleWidth;
-  
+
     // Increase touch speed by amplifying the movement
     const movementFactor = 1.5; // Adjust this factor to increase/decrease speed
     const newPaddleX = Math.max(0, Math.min(touchX * movementFactor, maxPaddleX));
-  
+
     setPaddleX(newPaddleX);
   };
   //  Keyboard Movement
@@ -206,11 +213,11 @@ const Game = ({ setShowNavbarAndFooter }) => {
       <div className={`${!gameOver ? 'not-over' : 'game-over'}`}>
         <h2>Game Over</h2>
         <span>
-          <a href="/">
+          <Link to="/">
             <Home />
-          </a>
-          <a href="/game">
-          <RotateCcw />
+          </Link>
+          <a href="/game" onClick={reStartGame}>
+            <RotateCcw />
           </a>
         </span>
       </div>
